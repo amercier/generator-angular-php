@@ -1,6 +1,9 @@
-# AngularJS generator [![Build Status](https://secure.travis-ci.org/amercier/generator-angular-php.png?branch=master)](http://travis-ci.org/amercier/generator-angular-php)
+# AngularJS generator
 
-Maintainers: [Alexandre Mercier](https://github.com/amercier)
+[![Build Status](https://secure.travis-ci.org/amercier/generator-angular-php.png?branch=master)](http://travis-ci.org/amercier/generator-angular-php)
+[![NPM version](https://badge.fury.io/js/generator-angular-php.png)](http://badge.fury.io/js/generator-angular-php)
+
+Maintainer: [Alexandre Mercier](https://github.com/amercier)
 
 Based on [generator-angular](https://github.com/yeoman/generator-angular)
 
