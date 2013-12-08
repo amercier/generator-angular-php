@@ -5,7 +5,14 @@
 
 Maintainer: [Alexandre Mercier](https://github.com/amercier)
 
-Based on [generator-angular](https://github.com/yeoman/generator-angular)
+Based on [generator-angular](https://github.com/yeoman/generator-angular). Adds
+a `/app/api` folder containing a sample RESTful PHP API. The API is available under
+`/api` URL. `During development, the PHP API is served by
+[PHP built-in web server](http://php.net/manual/en/features.commandline.webserver.php)
+and integrated seamlessly into the existing [connect](https://github.com/gruntjs/grunt-contrib-connect)
+configuration. Integration is done with [grunt-connect-proxy](https://github.com/drewzboto/grunt-connect-proxy)
+and a [patched version](https://github.com/amercier/grunt-php) of
+[grunt-php](https://github.com/sindresorhus/grunt-php) (see [PR #15](https://github.com/sindresorhus/grunt-php/pull/15) for details).
 
 
 ## Usage
