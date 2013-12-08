@@ -1,15 +1,15 @@
-# AngularJS generator [![Build Status](https://secure.travis-ci.org/yeoman/generator-angular.png?branch=master)](http://travis-ci.org/yeoman/generator-angular)
+# AngularJS generator [![Build Status](https://secure.travis-ci.org/amercier/generator-angular-php.png?branch=master)](http://travis-ci.org/amercier/generator-angular-php)
 
-Maintainer: [Brian Ford](https://github.com/btford)
+Maintainers: [Alexandre Mercier](https://github.com/amercier)
 
-Based on [angular-seed](https://github.com/angular/angular-seed/)
+Based on [generator-angular](https://github.com/yeoman/generator-angular)
 
 
 ## Usage
 
-Install `generator-angular`:
+Install `generator-angular-php`:
 ```
-npm install -g generator-angular
+npm install -g generator-angular-php
 ```
 
 Make a new directory, and `cd` into it:
@@ -17,9 +17,9 @@ Make a new directory, and `cd` into it:
 mkdir my-new-project && cd $_
 ```
 
-Run `yo angular`, optionally passing an app name:
+Run `yo angular-php`, optionally passing an app name:
 ```
-yo angular [app-name]
+yo angular-php [app-name]
 ```
 
 Run `grunt` for building and `grunt serve` for preview
@@ -29,18 +29,18 @@ Run `grunt` for building and `grunt serve` for preview
 
 Available generators:
 
-* [angular](#app) (aka [angular:app](#app))
-* [angular:controller](#controller)
-* [angular:directive](#directive)
-* [angular:filter](#filter)
-* [angular:route](#route)
-* [angular:service](#service)
-* [angular:provider](#service)
-* [angular:factory](#service)
-* [angular:value](#service)
-* [angular:constant](#service)
-* [angular:decorator] (#decorator)
-* [angular:view](#view)
+* [angular-php](#app) (aka [angular-php:app](#app))
+* [angular-php:controller](#controller)
+* [angular-php:directive](#directive)
+* [angular-php:filter](#filter)
+* [angular-php:route](#route)
+* [angular-php:service](#service)
+* [angular-php:provider](#service)
+* [angular-php:factory](#service)
+* [angular-php:value](#service)
+* [angular-php:constant](#service)
+* [angular-php:decorator] (#decorator)
+* [angular-php:view](#view)
 
 **Note: Generators are to be run from the root directory of your app.**
 
@@ -49,7 +49,7 @@ Sets up a new AngularJS app, generating all the boilerplate you need to get star
 
 Example:
 ```bash
-yo angular
+yo angular-php
 ```
 
 ### Route
@@ -57,7 +57,7 @@ Generates a controller and view, and configures a route in `app/scripts/app.js` 
 
 Example:
 ```bash
-yo angular:route myroute
+yo angular-php:route myroute
 ```
 
 Produces `app/scripts/controllers/myroute.js`:
@@ -77,7 +77,7 @@ Generates a controller in `app/scripts/controllers`.
 
 Example:
 ```bash
-yo angular:controller user
+yo angular-php:controller user
 ```
 
 Produces `app/scripts/controllers/user.js`:
@@ -91,7 +91,7 @@ Generates a directive in `app/scripts/directives`.
 
 Example:
 ```bash
-yo angular:directive myDirective
+yo angular-php:directive myDirective
 ```
 
 Produces `app/scripts/directives/myDirective.js`:
@@ -112,7 +112,7 @@ Generates a filter in `app/scripts/filters`.
 
 Example:
 ```bash
-yo angular:filter myFilter
+yo angular-php:filter myFilter
 ```
 
 Produces `app/scripts/filters/myFilter.js`:
@@ -129,7 +129,7 @@ Generates an HTML view file in `app/views`.
 
 Example:
 ```bash
-yo angular:view user
+yo angular-php:view user
 ```
 
 Produces `app/views/user.html`:
@@ -142,7 +142,7 @@ Generates an AngularJS service.
 
 Example:
 ```bash
-yo angular:service myService
+yo angular-php:service myService
 ```
 
 Produces `app/scripts/services/myService.js`:
@@ -152,14 +152,14 @@ angular.module('myMod').service('myService', function () {
 });
 ```
 
-You can also do `yo angular:factory`, `yo angular:provider`, `yo angular:value`, and `yo angular:constant` for other types of services.
+You can also do `yo angular-php:factory`, `yo angular-php:provider`, `yo angular-php:value`, and `yo angular-php:constant` for other types of services.
 
 ### Decorator
 Generates an AngularJS service decorator.
 
 Example:
 ```bash
-yo angular:decorator serviceName
+yo angular-php:decorator serviceName
 ```
 
 Produces `app/scripts/decorators/serviceNameDecorator.js`:
@@ -180,7 +180,7 @@ For generators that output scripts, the `--coffee` option will output CoffeeScri
 
 For example:
 ```bash
-yo angular:controller user --coffee
+yo angular-php:controller user --coffee
 ```
 
 Produces `app/scripts/controller/user.coffee`:
@@ -199,7 +199,7 @@ By default, generators produce unannotated code. Without annotations, AngularJS'
 
 #### Example
 ```bash
-yo angular:controller user --minsafe
+yo angular-php:controller user --minsafe
 ```
 
 Produces `app/controller/user.js`:
@@ -239,7 +239,7 @@ By default, new scripts are added to the index.html file. However, this may not 
 
 To skip adding them to the index, pass in the skip-add argument:
 ```bash
-yo angular:service serviceName --skip-add
+yo angular-php:service serviceName --skip-add
 ```
 
 ## Bower Components

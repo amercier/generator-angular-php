@@ -4,5 +4,4 @@ node_js:
   - '0.8'
 before_install:
   - currentfolder=${PWD##*/}
-  - if [ "$currentfolder" != 'generator-angular' ]; then cd .. && eval "mv $currentfolder generator-angular" && cd generator-angular; fi
-
+  - if [ "$currentfolder" != 'generator-angular-php' ]; then cd .. && eval "mv $currentfolder generator-angular-php" && cd generator-angular-php; fi
