@@ -15,6 +15,28 @@ module.exports = function (grunt) {
   // Time how long tasks take. Can help when optimizing build times
   require('time-grunt')(grunt);
 
+  // grunt-connect-proxy middleware to serve PHP
+  var proxyMiddleware = function (connect, options) {
+    var middlewares = [];
+    var directory = options.directory || options.base[options.base.length - 1];
+    if (!Array.isArray(options.base)) {
+        options.base = [options.base];
+    }
+
+    // Setup the proxy
+    middlewares.push(require('grunt-connect-proxy/lib/utils').proxyRequest);
+
+    options.base.forEach(function(base) {
+        // Serve static files.
+        middlewares.push(connect.static(base));
+    });
+
+    // Make directory browse-able.
+    middlewares.push(connect.directory(directory));
+
+    return middlewares;
+  };
+
   // Define the configuration for all the tasks
   grunt.initConfig({
 
@@ -79,13 +101,21 @@ module.exports = function (grunt) {
         hostname: 'localhost',
         livereload: 35729
       },
+      proxies: [
+        {
+          context: '/api',
+          host: 'localhost',
+          port: 8000
+        }
+      ],
       livereload: {
         options: {
           open: true,
           base: [
             '.tmp',
             '<%%= yeoman.app %>'
-          ]
+          ],
+          middleware: proxyMiddleware
         }
       },
       test: {
@@ -95,12 +125,15 @@ module.exports = function (grunt) {
             '.tmp',
             'test',
             '<%%= yeoman.app %>'
-          ]
+          ],
+          middleware: proxyMiddleware
         }
       },
       dist: {
         options: {
-          base: '<%%= yeoman.dist %>'
+          open: true,
+          base: '<%%= yeoman.dist %>',
+          middleware: proxyMiddleware
         }
       }
     },
@@ -416,6 +449,7 @@ module.exports = function (grunt) {
     if (target === 'dist') {
       return grunt.task.run([
         'build',
+        'configureProxies',
         'php:dist',
         'connect:dist:keepalive'
       ]);
@@ -425,6 +459,7 @@ module.exports = function (grunt) {
       'clean:server',
       'concurrent:server',
       'autoprefixer',
+      'configureProxies',
       'php:server',
       'connect:livereload',
       'watch'
