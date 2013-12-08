@@ -294,3 +294,8 @@ Generator.prototype.imageFiles = function () {
   this.sourceRoot(path.join(__dirname, 'templates'));
   this.directory('images', 'app/images', true);
 }
+
+Generator.prototype.phpFiles = function () {
+  this.sourceRoot(path.join(__dirname, 'templates'));
+  this.directory('api', 'app/api', true);
+}
