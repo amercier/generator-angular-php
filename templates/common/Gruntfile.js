@@ -62,6 +62,7 @@ module.exports = function (grunt) {
           livereload: '<%%= connect.options.livereload %>'
         },
         files: [
+          '<%%= yeoman.app %>/api/{,*/}*.*',
           '<%%= yeoman.app %>/{,*/}*.html',
           '.tmp/styles/{,*/}*.css',<% if (coffee) { %>
           '.tmp/scripts/{,*/}*.js',<% } %>
@@ -100,6 +101,25 @@ module.exports = function (grunt) {
       dist: {
         options: {
           base: '<%%= yeoman.dist %>'
+        }
+      }
+    },
+
+    // PHP built-in server
+    php: {
+      options: {
+        port: 8000,
+        // Change this to '0.0.0.0' to access the server from outside.
+        hostname: '127.0.0.1'
+      },
+      server: {
+        options: {
+          base: '<%%= yeoman.app %>',
+        }
+      },
+      dist: {
+        options: {
+          base: '<%%= yeoman.dist %>',
         }
       }
     },
@@ -312,6 +332,7 @@ module.exports = function (grunt) {
           cwd: '<%%= yeoman.app %>',
           dest: '<%%= yeoman.dist %>',
           src: [
+            'api/{,*/}*.*',
             '*.{ico,png,txt}',
             '.htaccess',
             'bower_components/**/*',
@@ -393,13 +414,18 @@ module.exports = function (grunt) {
 
   grunt.registerTask('serve', function (target) {
     if (target === 'dist') {
-      return grunt.task.run(['build', 'connect:dist:keepalive']);
+      return grunt.task.run([
+        'build',
+        'php:dist',
+        'connect:dist:keepalive'
+      ]);
     }
 
     grunt.task.run([
       'clean:server',
       'concurrent:server',
       'autoprefixer',
+      'php:server',
       'connect:livereload',
       'watch'
     ]);
