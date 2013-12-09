@@ -2,6 +2,7 @@
 
 [![Build Status](https://secure.travis-ci.org/amercier/generator-angular-php.png?branch=master)](http://travis-ci.org/amercier/generator-angular-php)
 [![NPM version](https://badge.fury.io/js/generator-angular-php.png)](http://badge.fury.io/js/generator-angular-php)
+[![Dependency Status](https://gemnasium.com/amercier/generator-angular-php.png)](https://gemnasium.com/amercier/generator-angular-php)
 
 Maintainer: [Alexandre Mercier](https://github.com/amercier)
 
