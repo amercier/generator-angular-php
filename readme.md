@@ -4,8 +4,6 @@
 [![NPM version](https://badge.fury.io/js/generator-angular-php.png)](http://badge.fury.io/js/generator-angular-php)
 [![Dependency Status](https://gemnasium.com/amercier/generator-angular-php.png)](https://gemnasium.com/amercier/generator-angular-php)
 
-Maintainer: [Alexandre Mercier](https://github.com/amercier)
-
 Based on [generator-angular](https://github.com/yeoman/generator-angular). Adds
 a `/app/api` folder containing a sample RESTful PHP API. The API is available under
 `/api` URL. `During development, the PHP API is served by
