@@ -1,4 +1,4 @@
-# AngularJS generator with a PHP back-end
+# AngularJS generator with PHP
 
 [![NPM version](https://badge.fury.io/js/generator-angular-php.png)](http://badge.fury.io/js/generator-angular-php)
 [![Build Status](https://secure.travis-ci.org/amercier/generator-angular-php.png?branch=master)](http://travis-ci.org/amercier/generator-angular-php)
