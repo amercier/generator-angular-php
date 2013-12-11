@@ -67,7 +67,7 @@ try {
 
     // Reject if not acceptable
     if (!array_key_exists('Accept', $headers) || !in_array('application/json', explode(', ', $headers['Accept']))) {
-        throw new Exception('Only application/json is acceptable');
+        throw new Exception('Only application/json is acceptable', 406);
     }
 
     /**
@@ -77,7 +77,8 @@ try {
      */
     if (isset($_GET['id'])) {
         if (!preg_match('/^[a-z0-9-]+$/', $id = $_GET['id'])) {
-            throw new Exception('Resource id must contain only alphanumeric and - characters', 400);
+            throw new Exception('
+             id must contain only lowercase alphanumeric and - characters', 400);
         }
         if (!array_key_exists($id, $resources)) {
             throw new Exception("Resource with id $id does not exist", 404);
@@ -136,7 +137,7 @@ catch(Exception $e) {
         case 405:
             $response['statusText'] = 'Method Not Allowed';
             break;
-        case 405:
+        case 406:
             $response['statusText'] = 'Not Acceptable';
             break;
         default:
