@@ -186,6 +186,21 @@ Generator.prototype.askForModules = function askForModules() {
   }.bind(this));
 };
 
+Generator.prototype.askForComposer = function askForComposer() {
+  var cb = this.async();
+
+  this.prompt([{
+    type: 'confirm',
+    name: 'composer',
+    message: 'Would you like to include Composer?',
+    default: true
+  }], function (props) {
+    this.composer = props.composer;
+
+    cb();
+  }.bind(this));
+};
+
 Generator.prototype.readIndex = function readIndex() {
   this.ngRoute = this.env.options.ngRoute;
   this.indexFile = this.engine(this.read('../../templates/common/index.html'), this);
