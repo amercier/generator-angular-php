@@ -96,7 +96,7 @@ try {
      */
     else {
         $url = 'http' . (array_key_exists('HTTPS', $_SERVER) && $_SERVER['HTTPS'] === 'on' ? 's' : '') . '://'
-            . $headers['Host'] . $_SERVER['REQUEST_URI'];
+            . $headers['Host'] . preg_replace('/^(\/api)?/', '/api', $_SERVER['REQUEST_URI']);
 
         $response['resources'] = array();
         foreach ($resources as $id => $resource) {

@@ -105,7 +105,10 @@ module.exports = function (grunt) {
         {
           context: '/api',
           host: 'localhost',
-          port: 8000
+          port: 8000,
+          rewrite: {
+            '^/api': ''
+          }
         }
       ],
       livereload: {
@@ -147,12 +150,12 @@ module.exports = function (grunt) {
       },
       server: {
         options: {
-          base: '<%%= yeoman.app %>',
+          base: '<%%= yeoman.app %>/api<% if (composer) { %>/public<% } %>',
         }
       },
       dist: {
         options: {
-          base: '<%%= yeoman.dist %>',
+          base: '<%%= yeoman.dist %>/api<% if (composer) { %>/public<% } %>',
         }
       }
     },

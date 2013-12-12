@@ -308,9 +308,14 @@ Generator.prototype.packageFiles = function () {
 Generator.prototype.imageFiles = function () {
   this.sourceRoot(path.join(__dirname, 'templates'));
   this.directory('images', 'app/images', true);
-}
+};
 
 Generator.prototype.phpFiles = function () {
   this.sourceRoot(path.join(__dirname, 'templates'));
-  this.directory('api', 'app/api', true);
-}
+  if (this.composer) {
+    this.directory('api', 'app/api', true);
+  }
+  else {
+    this.template('api/public/resource.php', 'app/api/resource.php');
+  }
+};
