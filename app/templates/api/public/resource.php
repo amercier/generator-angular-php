@@ -1,7 +1,9 @@
 <?php
 
 namespace Api;
-
+<% if (composer) { %>
+require_once __DIR__ . '/../vendor/autoload.php';
+<% } %>
 use \Exception;
 
 try {
