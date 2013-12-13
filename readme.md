@@ -33,6 +33,8 @@ yo angular-php [app-name]
 
 Run `grunt` for building and `grunt serve` for preview
 
+In `app/api` directory, run `make install` to update Composer dependencies.
+
 
 ## Generators
 
