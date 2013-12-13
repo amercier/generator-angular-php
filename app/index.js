@@ -4,7 +4,7 @@ var util = require('util');
 var angularUtils = require('../util.js');
 var spawn = require('child_process').spawn;
 var yeoman = require('yeoman-generator');
-
+var chalk = require('chalk');
 
 var Generator = module.exports = function Generator(args, options) {
   yeoman.generators.Base.apply(this, arguments);
@@ -66,7 +66,12 @@ var Generator = module.exports = function Generator(args, options) {
   });
 
   this.on('end', function () {
-    this.installDependencies({ skipInstall: this.options['skip-install'] });
+    this.installDependencies({
+      skipInstall: this.options['skip-install'],
+      callback: function() {
+        this.emit('dependenciesInstalled');
+      }.bind(this)
+    });
 
     var enabledComponents = [];
 
@@ -314,6 +319,15 @@ Generator.prototype.phpFiles = function () {
   this.sourceRoot(path.join(__dirname, 'templates'));
   if (this.composer) {
     this.directory('api', 'app/api', true);
+    this.on('dependenciesInstalled', function () {
+      console.log(
+        'Now running ' +
+        chalk.yellow.bold('make install --directory app/api') +
+        ' to install the required Composer dependencies.' +
+        ' If this fails, try running the command yourself.'
+      );
+      this.spawnCommand('make', ['install', '--directory', 'app/api']);
+    });
   }
   else {
     this.template('api/public/resource.php', 'app/api/resource.php');
