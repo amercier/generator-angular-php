@@ -318,7 +318,10 @@ Generator.prototype.imageFiles = function () {
 Generator.prototype.phpFiles = function () {
   this.sourceRoot(path.join(__dirname, 'templates'));
   if (this.composer) {
-    this.directory('api', 'app/api', true);
+    this.template('api/public/resource.php', 'app/api/public/resource.php');
+    this.template('api/composer.json', 'app/api/composer.json');
+    this.template('api/Makefile', 'app/api/Makefile');
+    this.template('api/_gitignore', 'app/api/.gitignore');
     this.on('dependenciesInstalled', function () {
       console.log(
         'Now running ' +

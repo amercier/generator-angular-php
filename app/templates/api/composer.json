@@ -1,0 +1,8 @@
+{
+  "name": "<%= _.slugify(appname) %>",
+  "type": "project",
+  "dependencies": {
+  },
+  "devDependencies": {
+  }
+}
