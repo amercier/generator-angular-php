@@ -1,10 +1,12 @@
 'use strict';
+var fs = require('fs');
 var path = require('path');
 var util = require('util');
 var angularUtils = require('../util.js');
-var spawn = require('child_process').spawn;
 var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
+var wiredep = require('wiredep');
+
 
 var Generator = module.exports = function Generator(args, options) {
   yeoman.generators.Base.apply(this, arguments);
@@ -69,7 +71,8 @@ var Generator = module.exports = function Generator(args, options) {
     this.installDependencies({
       skipInstall: this.options['skip-install'],
       callback: function() {
-        this.emit('dependenciesInstalled');
+        this._injectDependencies();
+        this._installPhpDependencies();
       }.bind(this)
     });
 
@@ -102,14 +105,50 @@ var Generator = module.exports = function Generator(args, options) {
         ].concat(enabledComponents)
       }
     });
+
   });
 
-  this.pkg = JSON.parse(this.readFileAsString(path.join(__dirname, '../package.json')));
+  this.pkg = require('../package.json');
 };
 
 util.inherits(Generator, yeoman.generators.Base);
 
+Generator.prototype.welcome = function welcome() {
+  // welcome message
+  if (!this.options['skip-welcome-message']) {
+    console.log(this.yeoman);
+    console.log(
+      'Out of the box I include Bootstrap and some AngularJS recommended modules.\n'
+    );
+
+    // Deprecation notice for minsafe
+    if (this.options.minsafe) {
+      console.warn(
+        '\n** The --minsafe flag is being deprecated in 0.7.0 and removed in ' +
+        '0.8.0. For more information, see ' +
+        'https://github.com/yeoman/generator-angular#minification-safe. **\n'
+      );
+    }
+  }
+};
+
+Generator.prototype.askForCompass = function askForCompass() {
+  var cb = this.async();
+
+  this.prompt([{
+    type: 'confirm',
+    name: 'compass',
+    message: 'Would you like to use Sass (with Compass)?',
+    default: true
+  }], function (props) {
+    this.compass = props.compass;
+
+    cb();
+  }.bind(this));
+};
+
 Generator.prototype.askForBootstrap = function askForBootstrap() {
+  var compass = this.compass;
   var cb = this.async();
 
   this.prompt([{
@@ -120,10 +159,10 @@ Generator.prototype.askForBootstrap = function askForBootstrap() {
   }, {
     type: 'confirm',
     name: 'compassBootstrap',
-    message: 'Would you like to use the SCSS version of Twitter Bootstrap with the Compass CSS Authoring Framework?',
+    message: 'Would you like to use the Sass version of Twitter Bootstrap?',
     default: true,
     when: function (props) {
-      return props.bootstrap;
+      return props.bootstrap && compass;
     }
   }], function (props) {
     this.bootstrap = props.bootstrap;
@@ -211,81 +250,18 @@ Generator.prototype.readIndex = function readIndex() {
   this.indexFile = this.engine(this.read('../../templates/common/index.html'), this);
 };
 
-// Waiting a more flexible solution for #138
 Generator.prototype.bootstrapFiles = function bootstrapFiles() {
-  var sass = this.compassBootstrap;
-  var files = [];
-  var source = 'styles/' + ( sass ? 's' : '' ) + 'css/';
+  var sass = this.compass;
+  var mainFile = 'main.' + (sass ? 's' : '') + 'css';
 
   if (this.bootstrap && !sass) {
-    files.push('bootstrap.css');
     this.copy('fonts/glyphicons-halflings-regular.eot', 'app/fonts/glyphicons-halflings-regular.eot');
     this.copy('fonts/glyphicons-halflings-regular.ttf', 'app/fonts/glyphicons-halflings-regular.ttf');
     this.copy('fonts/glyphicons-halflings-regular.svg', 'app/fonts/glyphicons-halflings-regular.svg');
     this.copy('fonts/glyphicons-halflings-regular.woff', 'app/fonts/glyphicons-halflings-regular.woff');
   }
 
-  files.push('main.' + (sass ? 's' : '') + 'css');
-
-  files.forEach(function (file) {
-    this.copy(source + file, 'app/styles/' + file);
-  }.bind(this));
-
-  this.indexFile = this.appendFiles({
-    html: this.indexFile,
-    fileType: 'css',
-    optimizedPath: 'styles/main.css',
-    sourceFileList: files.map(function (file) {
-      return 'styles/' + file.replace('.scss', '.css');
-    }),
-    searchPath: ['.tmp', 'app']
-  });
-};
-
-Generator.prototype.bootstrapJS = function bootstrapJS() {
-  if (!this.bootstrap) {
-    return;  // Skip if disabled.
-  }
-
-  // Wire Twitter Bootstrap plugins
-  this.indexFile = this.appendScripts(this.indexFile, 'scripts/plugins.js', [
-    'bower_components/sass-bootstrap/js/affix.js',
-    'bower_components/sass-bootstrap/js/alert.js',
-    'bower_components/sass-bootstrap/js/button.js',
-    'bower_components/sass-bootstrap/js/carousel.js',
-    'bower_components/sass-bootstrap/js/transition.js',
-    'bower_components/sass-bootstrap/js/collapse.js',
-    'bower_components/sass-bootstrap/js/dropdown.js',
-    'bower_components/sass-bootstrap/js/modal.js',
-    'bower_components/sass-bootstrap/js/scrollspy.js',
-    'bower_components/sass-bootstrap/js/tab.js',
-    'bower_components/sass-bootstrap/js/tooltip.js',
-    'bower_components/sass-bootstrap/js/popover.js'
-  ]);
-};
-
-Generator.prototype.extraModules = function extraModules() {
-  var modules = [];
-  if (this.resourceModule) {
-    modules.push('bower_components/angular-resource/angular-resource.js');
-  }
-
-  if (this.cookiesModule) {
-    modules.push('bower_components/angular-cookies/angular-cookies.js');
-  }
-
-  if (this.sanitizeModule) {
-    modules.push('bower_components/angular-sanitize/angular-sanitize.js');
-  }
-
-  if (this.routeModule) {
-    modules.push('bower_components/angular-route/angular-route.js');
-  }
-
-  if (modules.length) {
-    this.indexFile = this.appendScripts(this.indexFile, 'scripts/modules.js',
-        modules);
-  }
+  this.copy('styles/' + mainFile, 'app/styles/' + mainFile);
 };
 
 Generator.prototype.appJs = function appJs() {
@@ -315,6 +291,26 @@ Generator.prototype.imageFiles = function () {
   this.directory('images', 'app/images', true);
 };
 
+Generator.prototype._injectDependencies = function _injectDependencies() {
+  var howToInstall =
+    '\nAfter running `npm install & bower install`, inject your front end dependencies into' +
+    '\nyour HTML by running:' +
+    '\n' +
+    chalk.yellow.bold('\n  grunt bower-install');
+
+  if (this.options['skip-install']) {
+    console.log(howToInstall);
+  } else {
+    wiredep({
+      directory: 'app/bower_components',
+      bowerJson: JSON.parse(fs.readFileSync('./bower.json')),
+      ignorePath: 'app/',
+      htmlFile: 'app/index.html',
+      cssPattern: '<link rel="stylesheet" href="{{filePath}}">'
+    });
+  }
+};
+
 Generator.prototype.phpFiles = function () {
   this.sourceRoot(path.join(__dirname, 'templates'));
   if (this.composer) {
@@ -322,17 +318,18 @@ Generator.prototype.phpFiles = function () {
     this.template('api/composer.json', 'app/api/composer.json');
     this.template('api/Makefile', 'app/api/Makefile');
     this.template('api/_gitignore', 'app/api/.gitignore');
-    this.on('dependenciesInstalled', function () {
-      console.log(
-        'Now running ' +
-        chalk.yellow.bold('make install --directory app/api') +
-        ' to install the required Composer dependencies.' +
-        ' If this fails, try running the command yourself.'
-      );
-      this.spawnCommand('make', ['install', '--directory', 'app/api']);
-    });
   }
   else {
     this.template('api/public/resource.php', 'app/api/resource.php');
   }
+};
+
+Generator.prototype._installPhpDependencies = function _installPhpDependencies() {
+  console.log(
+    'Now running ' +
+    chalk.yellow.bold('make install --directory app/api') +
+    ' to install the required Composer dependencies.' +
+    ' If this fails, try running the command yourself.'
+  );
+  this.spawnCommand('make', ['install', '--directory', 'app/api']);
 };

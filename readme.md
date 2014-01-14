@@ -202,10 +202,15 @@ angular.module('myMod')
 
 A project can mix CoffeScript and JavaScript files.
 
-To output JavaScript files, even if CoffeeScript files exist (the default is to output CoffeeScript files if 
-the generator finds any in the project), use `--coffee=false`.
+To output JavaScript files, even if CoffeeScript files exist (the default is to output CoffeeScript files if the generator finds any in the project), use `--coffee=false`.
 
 ### Minification Safe
+
+**Deprecated**
+
+[Related Issue #452](https://github.com/yeoman/generator-angular/issues/452): This option is being removed in future versions of the generator. Initially it was needed as ngMin was not entirely stable. As it has matured, the need to keep separate versions of the script templates has led to extra complexity and maintenance of the generator. By removing these extra burdens, new features and bug fixes should be easier to implement. If you are dependent on this option, please take a look at ngMin and seriously consider implementing it in your own code. It will help reduce the amount of typing you have to do (and look through) as well as make your code cleaner to look at.
+
+
 By default, generators produce unannotated code. Without annotations, AngularJS's DI system will break when minified. Typically, these annotations that make minification safe are added automatically at build-time, after application files are concatenated, but before they are minified. By providing the `--minsafe` option, the code generated will out-of-the-box be ready for minification. The trade-off is between amount of boilerplate, and build process complexity.
 
 #### Example
@@ -239,7 +244,24 @@ angular.module('myMod').controller('MyCtrl',
 
 The annotations are important because minified code will rename variables, making it impossible for AngularJS to infer module names based solely on function parameters.
 
-The recommended build process uses `ngmin`, a tool that automatically adds these annotations. However, if you'd rather not use `ngmin`, you have to add these annotations manually yourself.
+The recommended build process uses `ngmin`, a tool that automatically adds these annotations. However, if you'd rather not use `ngmin`, you have to add these annotations manually yourself. **One thing to note is that `ngmin` does not produce minsafe code for things that are not main level elements like controller, services, providers, etc.:
+```javascript
+resolve: {
+  User: function(myService) {
+    return MyService();
+  }
+}
+```
+
+will need to be manually done like so:
+```javascript
+resolve: {
+  User: ['myService', function(myService) {
+    return MyService();
+  }]
+}
+```
+
 
 ### Add to Index
 By default, new scripts are added to the index.html file. However, this may not always be suitable. Some use cases:

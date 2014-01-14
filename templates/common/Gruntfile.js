@@ -67,7 +67,7 @@ module.exports = function (grunt) {
       jsTest: {
         files: ['test/spec/{,*/}*.js'],
         tasks: ['newer:jshint:test', 'karma']
-      },<% } %><% if (compassBootstrap) { %>
+      },<% } %><% if (compass) { %>
       compass: {
         files: ['<%%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
         tasks: ['compass:server', 'autoprefixer']
@@ -208,6 +208,14 @@ module.exports = function (grunt) {
       }
     },
 
+    // Automatically inject Bower components into the app
+    'bower-install': {
+      app: {
+        html: '<%%= yeoman.app %>/index.html',
+        ignorePath: '<%%= yeoman.app %>/'
+      }
+    },
+
 <% if (coffee) { %>
     // Compiles CoffeeScript to JavaScript
     coffee: {
@@ -235,7 +243,7 @@ module.exports = function (grunt) {
       }
     },<% } %>
 
-<% if (compassBootstrap) { %>
+<% if (compass) { %>
     // Compiles Sass to CSS and generates necessary files if requested
     compass: {
       options: {
@@ -250,7 +258,8 @@ module.exports = function (grunt) {
         httpGeneratedImagesPath: '/images/generated',
         httpFontsPath: '/styles/fonts',
         relativeAssets: false,
-        assetCacheBuster: false
+        assetCacheBuster: false,
+        raw: 'Sass::Script::Number.precision = 10\n'
       },
       dist: {
         options: {
@@ -321,19 +330,15 @@ module.exports = function (grunt) {
     htmlmin: {
       dist: {
         options: {
-          // Optional configurations that you can uncomment to use
-          // removeCommentsFromCDATA: true,
-          // collapseBooleanAttributes: true,
-          // removeAttributeQuotes: true,
-          // removeRedundantAttributes: true,
-          // useShortDoctype: true,
-          // removeEmptyAttributes: true,
-          // removeOptionalTags: true*/
+          collapseWhitespace: true,
+          collapseBooleanAttributes: true,
+          removeCommentsFromCDATA: true,
+          removeOptionalTags: true
         },
         files: [{
           expand: true,
-          cwd: '<%%= yeoman.app %>',
-          src: ['*.html', 'views/*.html'],
+          cwd: '<%%= yeoman.dist %>',
+          src: ['*.html', 'views/{,*/}*.html'],
           dest: '<%%= yeoman.dist %>'
         }]
       }
@@ -371,6 +376,8 @@ module.exports = function (grunt) {
             'api/{,*/}*.*',
             '*.{ico,png,txt}',
             '.htaccess',
+            '*.html',
+            'views/{,*/}*.html',
             'bower_components/**/*',
             'images/{,*/}*.{webp}',
             'fonts/*'
@@ -393,22 +400,21 @@ module.exports = function (grunt) {
     // Run some tasks in parallel to speed up the build process
     concurrent: {
       server: [<% if (coffee) { %>
-        'coffee:dist',<% } %><% if (compassBootstrap) { %>
+        'coffee:dist',<% } %><% if (compass) { %>
         'compass:server'<% } else { %>
         'copy:styles'<% } %>
       ],
       test: [<% if (coffee) { %>
-        'coffee',<% } %><% if (compassBootstrap) { %>
+        'coffee',<% } %><% if (compass) { %>
         'compass'<% } else { %>
         'copy:styles'<% } %>
       ],
       dist: [<% if (coffee) { %>
-        'coffee',<% } %><% if (compassBootstrap) { %>
+        'coffee',<% } %><% if (compass) { %>
         'compass:dist',<% } else { %>
         'copy:styles',<% } %>
         'imagemin',
-        'svgmin',
-        'htmlmin'
+        'svgmin'
       ]
     },
 
@@ -460,6 +466,7 @@ module.exports = function (grunt) {
 
     grunt.task.run([
       'clean:server',
+      'bower-install',
       'concurrent:server',
       'autoprefixer',
       'configureProxies',
@@ -484,6 +491,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('build', [
     'clean:dist',
+    'bower-install',
     'useminPrepare',
     'concurrent:dist',
     'autoprefixer',
@@ -494,7 +502,8 @@ module.exports = function (grunt) {
     'cssmin',
     'uglify',
     'rev',
-    'usemin'
+    'usemin',
+    'htmlmin'
   ]);
 
   grunt.registerTask('default', [
