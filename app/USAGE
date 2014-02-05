@@ -2,7 +2,7 @@ Description:
     Creates a default AngularJS app
 
 Example:
-    yo angular-php [--coffee] [--minsafe]
+    yo angular-php [--coffee]
 
     This will create:
         Gruntfile.js
