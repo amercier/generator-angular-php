@@ -4,18 +4,24 @@
 
 root = true
 
+# Due to a bug in the EditorConfig for SublimeText, we set tab indentation for
+# all files and we set exceptions for all files with an extension
 
 [*]
+indent_style = tab
+indent_size = 4
 
-# Change these settings to your own preference
-indent_style = space
-indent_size = 2
-
-# We recommend you to keep these unchanged
 end_of_line = lf
 charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
+
+[*.*]
+indent_style = space
+indent_size = 2
+
+[*.php]
+indent_size = 4
 
 [*.md]
 trim_trailing_whitespace = false
