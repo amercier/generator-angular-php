@@ -17,14 +17,26 @@
 </div>
 
 <div class="row marketing">
+
   <p ng-if="loading">Loading...</p>
+
   <div ng-repeat="thing in awesomeThings">
     <h4>{{thing.name}}</h4>
     <p ng-if="thing.description">{{thing.description}}</p>
     <p ng-if="thing.loading">Loading...</p>
-    <p ng-if="thing.error" class="alert alert-danger" ng-if="error">{{thing.error}}</p>
+    <div ng-if="thing.error" class="alert alert-danger">
+      <strong>{{thing.error.statusText}}</strong>
+      <hr>
+      <p>{{thing.error.description}}</p>
+    </div>
   </div>
-  <p class="alert alert-danger" ng-if="error">{{error}}</p>
+
+  <div ng-if="error" class="alert alert-danger">
+    <strong>{{error.statusText}}</strong>
+    <hr>
+    <p>{{error.description}}</p>
+  </div>
+
 </div>
 
 <div class="footer">

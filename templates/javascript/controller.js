@@ -22,16 +22,24 @@ angular.module('<%= scriptAppName %>')
               thing.loading = false;
               thing.description = data.description;
             }).
-            error(function (data) {
+            error(function (data, status) {
               thing.loading = false;
-              thing.error = data.description || 'Server is unreachable';
+              thing.error = data || {
+                  status: status,
+                  statusText: 'Internal Server Error',
+                  description: 'No details available'
+                };
             });
         });
       }).
 
-      error(function (data) {
+      error(function (data, status) {
         $scope.loading = false;
-        $scope.error = data.description || 'Server is unreachable';
+        $scope.error = data || {
+            status: status,
+            statusText: 'Internal Server Error',
+            description: 'No details available'
+          };
       });
 
   });
