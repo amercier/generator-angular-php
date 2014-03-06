@@ -79,8 +79,7 @@ try {
      */
     if (isset($_GET['id'])) {
         if (!preg_match('/^[a-z0-9-]+$/', $id = $_GET['id'])) {
-            throw new Exception('
-             id must contain only lowercase alphanumeric and - characters', 400);
+            throw new Exception('id must contain only lowercase alphanumeric and - characters', 400);
         }
         if (!array_key_exists($id, $resources)) {
             throw new Exception("Resource with id $id does not exist", 404);
