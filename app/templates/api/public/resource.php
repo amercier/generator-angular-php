@@ -1,15 +1,22 @@
 <?php
 
 namespace Api;
-<% if (composer) { %>
-require_once __DIR__ . '/../vendor/autoload.php';
-<% } %>
 use \Exception;
+
+error_reporting(E_ALL);
 
 try {
     // Prevent displaying errors
     ob_start();
 
+    <% if (composer) { %>
+    // Composer autoloader
+    if (!file_exists(__DIR__ . '/../vendor/autoload.php')) {
+        throw new Exception('Missing Composer dependencies. Please go to /api and run `make install`.', 500);
+    }
+    require_once __DIR__ . '/../vendor/autoload.php';
+
+    <% } %>
     $response = array();
     $allowedMethods = array('GET');
     $allowedHeaders = array();
