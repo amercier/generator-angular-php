@@ -145,12 +145,12 @@ Generator.prototype.askForBootstrap = function askForBootstrap() {
   this.prompt([{
     type: 'confirm',
     name: 'bootstrap',
-    message: 'Would you like to include Twitter Bootstrap?',
+    message: 'Would you like to include Bootstrap?',
     default: true
   }, {
     type: 'confirm',
     name: 'compassBootstrap',
-    message: 'Would you like to use the Sass version of Twitter Bootstrap?',
+    message: 'Would you like to use the Sass version of Bootstrap?',
     default: true,
     when: function (props) {
       return props.bootstrap && compass;
@@ -214,7 +214,7 @@ Generator.prototype.askForModules = function askForModules() {
     }
 
     if (angMods.length) {
-      this.env.options.angularDeps = "\n  " + angMods.join(",\n  ") +"\n";
+      this.env.options.angularDeps = '\n    ' + angMods.join(',\n    ') + '\n  ';
     }
 
     cb();
@@ -287,7 +287,7 @@ Generator.prototype._injectDependencies = function _injectDependencies() {
     '\nAfter running `npm install & bower install`, inject your front end dependencies into' +
     '\nyour HTML by running:' +
     '\n' +
-    chalk.yellow.bold('\n  grunt bower-install');
+    chalk.yellow.bold('\n  grunt bowerInstall');
 
   if (this.options['skip-install']) {
     console.log(howToInstall);
@@ -296,8 +296,14 @@ Generator.prototype._injectDependencies = function _injectDependencies() {
       directory: 'app/bower_components',
       bowerJson: JSON.parse(fs.readFileSync('./bower.json')),
       ignorePath: 'app/',
-      htmlFile: 'app/index.html',
-      cssPattern: '<link rel="stylesheet" href="{{filePath}}">'
+      src: 'app/index.html',
+      fileTypes: {
+        html: {
+          replace: {
+            css: '<link rel="stylesheet" href="{{filePath}}">'
+          }
+        }
+      }
     });
   }
 };

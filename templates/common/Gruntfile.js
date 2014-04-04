@@ -48,7 +48,11 @@ module.exports = function (grunt) {
     },
 
     // Watches files for changes and runs tasks based on the changed files
-    watch: {<% if (coffee) { %>
+    watch: {
+      bower: {
+        files: ['bower.json'],
+        tasks: ['bowerInstall']
+      },<% if (coffee) { %>
       coffee: {
         files: ['<%%= yeoman.app %>/scripts/{,*/}*.{coffee,litcoffee,coffee.md}'],
         tasks: ['newer:coffee:dist']
@@ -166,10 +170,12 @@ module.exports = function (grunt) {
         jshintrc: '.jshintrc',
         reporter: require('jshint-stylish')
       },
-      all: [
-        'Gruntfile.js'<% if (!coffee) { %>,
-        '<%%= yeoman.app %>/scripts/{,*/}*.js'<% } %>
-      ]<% if (!coffee) { %>,
+      all: {
+        src: [
+          'Gruntfile.js'<% if (!coffee) { %>,
+          '<%%= yeoman.app %>/scripts/{,*/}*.js'<% } %>
+        ]
+      }<% if (!coffee) { %>,
       test: {
         options: {
           jshintrc: 'test/.jshintrc'
@@ -209,14 +215,17 @@ module.exports = function (grunt) {
     },
 
     // Automatically inject Bower components into the app
-    'bower-install': {
+    bowerInstall: {
       app: {
-        html: '<%%= yeoman.app %>/index.html',
+        src: ['<%%= yeoman.app %>/index.html'],
         ignorePath: '<%%= yeoman.app %>/'
-      }
-    },
+      }<% if (compass) { %>,
+      sass: {
+        src: ['<%%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
+        ignorePath: '<%%= yeoman.app %>/bower_components/'
+      }<% } %>
+    },<% if (coffee) { %>
 
-<% if (coffee) { %>
     // Compiles CoffeeScript to JavaScript
     coffee: {
       options: {
@@ -241,9 +250,8 @@ module.exports = function (grunt) {
           ext: '.js'
         }]
       }
-    },<% } %>
+    },<% } %><% if (compass) { %>
 
-<% if (compass) { %>
     // Compiles Sass to CSS and generates necessary files if requested
     compass: {
       options: {
@@ -293,7 +301,16 @@ module.exports = function (grunt) {
     useminPrepare: {
       html: '<%%= yeoman.app %>/index.html',
       options: {
-        dest: '<%%= yeoman.dist %>'
+        dest: '<%%= yeoman.dist %>',
+        flow: {
+          html: {
+            steps: {
+              js: ['concat', 'uglifyjs'],
+              css: ['cssmin']
+            },
+            post: {}
+          }
+        }
       }
     },
 
@@ -307,6 +324,12 @@ module.exports = function (grunt) {
     },
 
     // The following *-min tasks produce minified files in the dist folder
+    cssmin: {
+      options: {
+        root: '<%%= yeoman.app %>'
+      }
+    },
+
     imagemin: {
       dist: {
         files: [{
@@ -317,6 +340,7 @@ module.exports = function (grunt) {
         }]
       }
     },
+
     svgmin: {
       dist: {
         files: [{
@@ -327,6 +351,7 @@ module.exports = function (grunt) {
         }]
       }
     },
+
     htmlmin: {
       dist: {
         options: {
@@ -379,7 +404,6 @@ module.exports = function (grunt) {
             '.htaccess',
             '*.html',
             'views/{,*/}*.html',
-            'bower_components/**/*',
             'images/{,*/}*.{webp}',
             'fonts/*'
           ]
@@ -455,7 +479,7 @@ module.exports = function (grunt) {
   });
 
 
-  grunt.registerTask('serve', function (target) {
+  grunt.registerTask('serve', 'Compile then start a connect web server', function (target) {
     if (target === 'dist') {
       return grunt.task.run([
         'build',
@@ -467,7 +491,7 @@ module.exports = function (grunt) {
 
     grunt.task.run([
       'clean:server',
-      'bower-install',
+      'bowerInstall',
       'concurrent:server',
       'autoprefixer',
       'configureProxies',
@@ -477,7 +501,7 @@ module.exports = function (grunt) {
     ]);
   });
 
-  grunt.registerTask('server', function (target) {
+  grunt.registerTask('server', 'DEPRECATED TASK. Use the "serve" task instead', function (target) {
     grunt.log.warn('The `server` task has been deprecated. Use `grunt serve` to start a server.');
     grunt.task.run(['serve:' + target]);
   });
@@ -492,7 +516,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('build', [
     'clean:dist',
-    'bower-install',
+    'bowerInstall',
     'useminPrepare',
     'concurrent:dist',
     'autoprefixer',
