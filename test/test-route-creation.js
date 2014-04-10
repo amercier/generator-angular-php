@@ -30,7 +30,7 @@ describe('Angular generator route mechanism', function () {
       if (err) {
         done(err);
       }
-      angular = helpers.createGenerator('angular:app', deps);
+      angular = helpers.createGenerator('angular-php:app', deps);
       angular.options['skip-install'] = true;
 
       helpers.mockPrompt(angular, {
@@ -62,7 +62,7 @@ describe('Angular generator route mechanism', function () {
       '../../view'
     ];
 
-    var angularRouteGenerator = helpers.createGenerator('angular:route', deps, [route]);
+    var angularRouteGenerator = helpers.createGenerator('angular-php:route', deps, [route]);
 
     angularRouteGenerator.run({}, function(){
 
@@ -96,7 +96,7 @@ describe('Angular generator route mechanism', function () {
       '../../view'
     ];
 
-    var angularRouteGenerator = helpers.createGenerator('angular:route', deps, [route], { uri: uri });
+    var angularRouteGenerator = helpers.createGenerator('angular-php:route', deps, [route], { uri: uri });
 
     angularRouteGenerator.run({}, function(){
 

@@ -180,7 +180,7 @@ readme for more information about this change
 
 #### Bug Fixes
 
-* **cli:** fix typo in angular:view generator usage ([d62c2e34](http://github.com/yeoman/generator-angular/commit/d62c2e348bcc61a6794ca23df02b6cce3c79d993))
+* **cli:** fix typo in angular-php:view generator usage ([d62c2e34](http://github.com/yeoman/generator-angular/commit/d62c2e348bcc61a6794ca23df02b6cce3c79d993))
 * **coffee:**
   * remove extraneous commas and returns ([6df875cd](http://github.com/yeoman/generator-angular/commit/6df875cd7167aa4a4e9f98a82d2f7fba98a20b0b))
   * remove the semi-colon from the coffee script templates ([cd46aa88](http://github.com/yeoman/generator-angular/commit/cd46aa88953e60d81dfef64b999f751dc4468ab7))
@@ -270,7 +270,7 @@ readme for more information about this change
 
 * **test:** Updated tests for new prompt ([64e57571](http://github.com/yeoman/generator-angular/commit/64e57571))
 
-* **cli:** fix typo in angular:constant generator usage ([6cbb80fd](http://github.com/yeoman/generator-angular/commit/6cbb80fd))
+* **cli:** fix typo in angular-php:constant generator usage ([6cbb80fd](http://github.com/yeoman/generator-angular/commit/6cbb80fd))
 
 <a name="v0.2.2"></a>
 ## v0.2.2 (2013-04-20)

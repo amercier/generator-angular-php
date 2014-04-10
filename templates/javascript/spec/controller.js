@@ -44,7 +44,7 @@ describe('Controller: <%= classedName %>Ctrl', function () {
         description: 'HTML5 Boilerplate is a professional front-end template' +
           ' for building fast, robust, and adaptable web apps or sites.'
       },
-      angular: {
+      angular-php: {
         name: 'Angular',
         description: 'AngularJS is a toolset for building the framework most' +
           ' suited to your application development.'
