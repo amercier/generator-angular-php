@@ -109,10 +109,7 @@ module.exports = function (grunt) {
         {
           context: '/api',
           host: 'localhost',
-          port: 8000,
-          rewrite: {
-            '^/api': ''
-          }
+          port: 8000
         }
       ],
       livereload: {
@@ -150,16 +147,17 @@ module.exports = function (grunt) {
       options: {
         port: 8000,
         // Change this to '0.0.0.0' to access the server from outside.
-        hostname: '127.0.0.1'
+        hostname: '127.0.0.1',
+        router: 'index.php'
       },
       server: {
         options: {
-          base: '<%%= yeoman.app %>/api<% if (composer) { %>/public<% } %>',
+          base: '<%%= yeoman.app %>/api',
         }
       },
       dist: {
         options: {
-          base: '<%%= yeoman.dist %>/api<% if (composer) { %>/public<% } %>',
+          base: '<%%= yeoman.dist %>/api',
         }
       }
     },

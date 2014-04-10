@@ -221,21 +221,6 @@ Generator.prototype.askForModules = function askForModules() {
   }.bind(this));
 };
 
-Generator.prototype.askForComposer = function askForComposer() {
-  var cb = this.async();
-
-  this.prompt([{
-    type: 'confirm',
-    name: 'composer',
-    message: 'Would you like to include Composer?',
-    default: true
-  }], function (props) {
-    this.composer = props.composer;
-
-    cb();
-  }.bind(this));
-};
-
 Generator.prototype.readIndex = function readIndex() {
   this.ngRoute = this.env.options.ngRoute;
   this.indexFile = this.engine(this.read('../../templates/common/index.html'), this);
@@ -310,15 +295,10 @@ Generator.prototype._injectDependencies = function _injectDependencies() {
 
 Generator.prototype.phpFiles = function () {
   this.sourceRoot(path.join(__dirname, 'templates'));
-  if (this.composer) {
-    this.template('api/public/resource.php', 'app/api/public/resource.php');
-    this.template('api/composer.json', 'app/api/composer.json');
-    this.template('api/Makefile', 'app/api/Makefile');
-    this.template('api/_gitignore', 'app/api/.gitignore');
-  }
-  else {
-    this.template('api/public/resource.php', 'app/api/resource.php');
-  }
+  this.template('api/index.php', 'app/api/index.php');
+  this.template('api/composer.json', 'app/api/composer.json');
+  this.template('api/Makefile', 'app/api/Makefile');
+  this.template('api/_gitignore', 'app/api/.gitignore');
 };
 
 Generator.prototype._installPhpDependencies = function _installPhpDependencies() {

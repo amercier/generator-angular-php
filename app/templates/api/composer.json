@@ -2,6 +2,7 @@
   "name": "<%= _.slugify(appname) %>",
   "type": "project",
   "require": {
+    "slim/slim": "2.*"
   },
   "require-dev": {
   }
