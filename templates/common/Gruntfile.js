@@ -109,7 +109,7 @@ module.exports = function (grunt) {
         {
           context: '/api',
           host: 'localhost',
-          port: 8000
+          port: '<%= php.options.port %>'
         }
       ],
       livereload: {
