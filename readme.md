@@ -10,8 +10,7 @@ a `/app/api` folder containing a sample RESTful PHP API. The API is available un
 [PHP built-in web server](http://php.net/manual/en/features.commandline.webserver.php)
 and integrated seamlessly into the existing [connect](https://github.com/gruntjs/grunt-contrib-connect)
 configuration. Integration is done with [grunt-connect-proxy](https://github.com/drewzboto/grunt-connect-proxy)
-and [grunt-php](https://github.com/sindresorhus/grunt-php) (on master branch, see
-[PR #16](https://github.com/sindresorhus/grunt-php/pull/16) for details).
+and [grunt-php](https://github.com/sindresorhus/grunt-php).
 
 
 ## Usage
