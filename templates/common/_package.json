@@ -3,7 +3,6 @@
   "version": "0.0.0",
   "dependencies": {},
   "devDependencies": {
-    "gifsicle": "0.1.3",
     "grunt": "~0.4.1",
     "grunt-autoprefixer": "~0.4.0",
     "grunt-bower-install": "~1.0.0",
