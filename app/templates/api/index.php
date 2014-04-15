@@ -4,7 +4,7 @@ try {
 
     // Dependencies
     if (!file_exists($autoload = __DIR__ . '/vendor/autoload.php')) {
-      throw new \Exception('Composer dependencies not installed. Run `make install --directory app/api`', 500);
+        throw new \Exception('Composer dependencies not installed. Run `make install --directory app/api`', 500);
     }
     require_once $autoload;
 
@@ -56,7 +56,7 @@ try {
         ),
     );
 
-    $app->get('/api/features', function() use ($app) {
+    $app->get('/api/features', function () use ($app) {
         $features = array();
         foreach ($app->features as $id => $feature) {
             $features[] = array(
@@ -69,14 +69,14 @@ try {
         $app->response->setBody(json_encode($features));
     });
 
-    $app->get('/api/features/:id', function($id) use ($app) {
+    $app->get('/api/features/:id', function ($id) use ($app) {
         if (!array_key_exists($id, $app->features)) {
             return $app->notFound();
         }
         $app->response->headers->set('Content-Type', 'application/json');
         $app->response->setBody(json_encode(array_merge(
-          array('id' => $id),
-          $app->features[$id]
+            array('id' => $id),
+            $app->features[$id]
         )));
     });
 
@@ -88,7 +88,7 @@ try {
 
 } catch (\Exception $e) {
     http_response_code($e->getCode() === 0 ? 500 : $e->getCode());
-    header ('Content-Type: application/json');
+    header('Content-Type: application/json');
     echo json_encode(array(
         'message' => $e->getMessage(),
         'type' => get_class($e),
