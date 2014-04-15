@@ -1,9 +1,14 @@
 {
   "name": "<%= _.slugify(appname) %>",
   "type": "project",
+  "repositories": [
+  ],
   "require": {
+    "php": ">=5.4",
     "slim/slim": "2.*"
   },
   "require-dev": {
+    "phpunit/phpunit": "4.*",
+    "squizlabs/php_codesniffer": "1.*"
   }
 }
