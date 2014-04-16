@@ -401,7 +401,7 @@ module.exports = function (grunt) {
           cwd: '<%%= yeoman.app %>',
           dest: '<%%= yeoman.dist %>',
           src: [
-            'api/{,*/}*.*',
+            'api/**',
             '*.{ico,png,txt}',
             '.htaccess',
             '*.html',
@@ -446,13 +446,16 @@ module.exports = function (grunt) {
     },
 
     shell: {
+      options: {
+        stdout: true,
+        stderr: true,
+        failOnError: true
+      },
       phpTest: {
-        options: {
-          stdout: true,
-          stderr: true,
-          failOnError: true
-        },
         command: 'make --directory <%%= yeoman.app %>/api test'
+      },
+      phpUpdate: {
+        command: 'make --directory <%%= yeoman.app %>/api update'
       }
     },
 
@@ -531,6 +534,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('build', [
     'clean:dist',
+    'shell:phpUpdate',
     'bowerInstall',
     'useminPrepare',
     'concurrent:dist',
