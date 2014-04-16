@@ -2,6 +2,7 @@
 
 namespace Api;
 
+use Api\Model\Features;
 use \Slim\Slim;
 use \Exception;
 
@@ -41,27 +42,19 @@ class Application extends Slim
 
         // /features
         $this->get('/api/features', function () {
-            $features = array();
-            foreach ($this->config['features'] as $id => $feature) {
-                $features[] = array(
-                    'id' => $id,
-                    'name' => $feature['name'],
-                    'href' => '/api/features/' . $id,
-                );
-            }
+            $features = new Features($this->config['features']);
             $this->response->headers->set('Content-Type', 'application/json');
-            $this->response->setBody(json_encode($features));
+            $this->response->setBody(json_encode($features->getFeatures()));
         });
 
         $this->get('/api/features/:id', function ($id) {
-            if (!array_key_exists($id, $this->config['features'])) {
+            $features = new Features($this->config['features']);
+            $feature = $features->getFeature($id);
+            if ($feature === null) {
                 return $this->notFound();
             }
             $this->response->headers->set('Content-Type', 'application/json');
-            $this->response->setBody(json_encode(array_merge(
-                array('id' => $id),
-                $this->config['features'][$id]
-            )));
+            $this->response->setBody(json_encode($feature));
         });
     }
 

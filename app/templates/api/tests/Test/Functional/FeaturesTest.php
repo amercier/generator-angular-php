@@ -26,7 +26,7 @@ class FeaturesTest extends \PHPUnit_Framework_TestCase
             $expected[] = array(
                 'id' => $id,
                 'name' => $feature['name'],
-                'href' => '/api/features/' . $id,
+                'href' => './api/features/' . $id,
             );
         }
 
@@ -45,7 +45,7 @@ class FeaturesTest extends \PHPUnit_Framework_TestCase
             ));
             $response = $app->invoke();
             $this->assertEquals(
-                json_encode(array_merge(array('id' => $id), $feature)),
+                json_encode(array_merge(array('id' => $id), $feature, array('href' => './api/features/' . $id))),
                 $response->getBody()
             );
             $this->assertEquals(200, $response->getStatus());
