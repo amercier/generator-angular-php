@@ -1,6 +1,12 @@
 {
   "name": "<%= _.slugify(appname) %>",
   "type": "project",
+  "autoload": {
+    "psr-0": {
+      "Api": "src/",
+      "Test": "tests/"
+    }
+  },
   "repositories": [
   ],
   "require": {

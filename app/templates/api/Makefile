@@ -35,8 +35,8 @@ test: install
 	echo ===============================
 
 lint: install
-	vendor/bin/phpcs --standard=PSR1 --ignore=vendor/ .
-	vendor/bin/phpcs --standard=PSR2 --ignore=vendor/ .
+	vendor/bin/phpcs -p --standard=PSR1 config src tests index.php
+	vendor/bin/phpcs -p --standard=PSR2 config src tests index.php
 
 
 # ==============================================================================

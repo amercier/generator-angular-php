@@ -1,94 +1,39 @@
 <?php
-error_reporting(E_ALL);
+error_reporting(-1);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+date_default_timezone_set('UTC');
+
 try {
 
-    // Dependencies
+    // Initialize Composer autoloader
     if (!file_exists($autoload = __DIR__ . '/vendor/autoload.php')) {
-        throw new \Exception('Composer dependencies not installed. Run `make install --directory app/api`', 500);
+        throw new \Exception('Composer dependencies not installed. Run `make install --directory app/api`');
     }
     require_once $autoload;
 
-
-    // Config
-    $config = array();
-    if (!file_exists($configDirectory = __DIR__ . '/config') || !is_dir($configDirectory)) {
-        throw new \Exception('Config directory is missing: ' . $configDirectory, 500);
-    }
-    foreach (preg_grep('/\\.php$/', scandir($configDirectory)) as $filename) {
-        $config = array_replace_recursive($config, include $configDirectory . '/' . $filename);
-    }
-
-
-    // Slim Framework initialization
-
+    // Initialize Slim Framework
     if (!class_exists('\\Slim\\Slim')) {
         throw new \Exception(
             'Missing Slim from Composer dependencies.'
-            . ' Ensure slim/slim is in composer.json and run `make update --directory app/api`',
-            500
+            . ' Ensure slim/slim is in composer.json and run `make update --directory app/api`'
         );
     }
-    $app = new \Slim\Slim();
-    $app->config('debug', false);
-    $app->error(function (\Exception $e) {
-        throw $e;
-    });
-    $app->notFound(function () use ($app) {
-        $request = $app->request;
-        throw new Exception(
-            'Resource ' . $request->getResourceUri() . ' using '
-            . $request->getMethod() . ' method does not exist.',
-            404
-        );
-    });
 
-
-    // Application-specific code starts here
-
-    $app->features = $config['features'];
-
-    $app->get('/api/features', function () use ($app) {
-        $features = array();
-        foreach ($app->features as $id => $feature) {
-            $features[] = array(
-                'id' => $id,
-                'name' => $feature['name'],
-                'href' => '/api/features/' . $id,
-            );
-        }
-        $app->response->headers->set('Content-Type', 'application/json');
-        $app->response->setBody(json_encode($features));
-    });
-
-    $app->get('/api/features/:id', function ($id) use ($app) {
-        if (!array_key_exists($id, $app->features)) {
-            return $app->notFound();
-        }
-        $app->response->headers->set('Content-Type', 'application/json');
-        $app->response->setBody(json_encode(array_merge(
-            array('id' => $id),
-            $app->features[$id]
-        )));
-    });
-
-
-    // Response
-
-    // $app->response->headers->set('Content-Type', 'application/json');
+    // Run application
+    $app = new \Api\Application();
     $app->run();
 
 } catch (\Exception $e) {
-    if (!class_exists('\\Slim\\Http\\Response')
-        || ($statusText = \Slim\Http\Response::getMessageForCode($status = $e->getCode())) === null
-    ) {
-        $status = 500;
-        $statusText = 'Internal Server Error';
+    if (isset($app)) {
+        $app->handleException($e);
+    } else {
+        http_response_code(500);
+        header('Content-Type: application/json');
+        echo json_encode(array(
+            'status' => 500,
+            'statusText' => 'Internal Server Error',
+            'description' => $e->getMessage(),
+        ));
     }
-    http_response_code($status);
-    header('Content-Type: application/json');
-    echo json_encode(array(
-        'status' => $status,
-        'statusText' => $statusText,
-        'description' => $e->getMessage(),
-    ));
 }
