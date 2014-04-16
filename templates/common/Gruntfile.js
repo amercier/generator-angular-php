@@ -88,12 +88,16 @@ module.exports = function (grunt) {
           livereload: '<%%= connect.options.livereload %>'
         },
         files: [
-          '<%%= yeoman.app %>/api/{,*/}*.*',
+          '<%%= yeoman.app %>/api/{,{config,src,tests}/**/}/*',
           '<%%= yeoman.app %>/{,*/}*.html',
           '.tmp/styles/{,*/}*.css',<% if (coffee) { %>
           '.tmp/scripts/{,*/}*.js',<% } %>
           '<%%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
         ]
+      },
+      phpTest: {
+        files: ['<%%= yeoman.app %>/api/{,{config,src,tests}/**/}/*'],
+        tasks: ['shell:phpTest']
       }
     },
 
@@ -441,6 +445,17 @@ module.exports = function (grunt) {
       ]
     },
 
+    shell: {
+      phpTest: {
+        options: {
+          stdout: true,
+          stderr: true,
+          failOnError: true
+        },
+        command: 'make --directory <%%= yeoman.app %>/api test'
+      }
+    },
+
     // By default, your `index.html`'s <!-- Usemin block --> will take care of
     // minification. These next options are pre-configured if you do not wish
     // to use the Usemin blocks.
@@ -489,6 +504,7 @@ module.exports = function (grunt) {
 
     grunt.task.run([
       'clean:server',
+      'shell:phpTest',
       'bowerInstall',
       'concurrent:server',
       'autoprefixer',
@@ -506,6 +522,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('test', [
     'clean:server',
+    'shell:phpTest',
     'concurrent:test',
     'autoprefixer',
     'connect:test',

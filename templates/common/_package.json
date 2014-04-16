@@ -25,6 +25,7 @@
     "grunt-ngmin": "~0.0.2",
     "grunt-php": "~0.3.2",
     "grunt-rev": "~0.1.0",
+    "grunt-shell": "^0.6.4",
     "grunt-svgmin": "~0.2.0",
     "grunt-usemin": "~2.0.0",
     "jshint-stylish": "~0.1.3",
