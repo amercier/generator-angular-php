@@ -9,8 +9,6 @@
       <whitelist processUncoveredFilesFromWhitelist="true">
         <directory suffix=".php">config</directory>
         <directory suffix=".php">src</directory>
-        <directory suffix=".php">tests</directory>
-        <file>index.php</file>
       </whitelist>
     </filter>
 </phpunit>

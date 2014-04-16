@@ -23,7 +23,7 @@ class Application extends Slim
         return $config;
     }
 
-    public function __construct(array $userSettings = array())
+    public function __construct(array $userSettings = array(), $configDirectory = 'config')
     {
         // Slim initialization
         parent::__construct($userSettings);
@@ -36,7 +36,7 @@ class Application extends Slim
         });
 
         // Config
-        $this->configDirectory = __DIR__ . '/../../config';
+        $this->configDirectory = __DIR__ . '/../../' . $configDirectory;
         $this->config = $this->initConfig();
 
         // /features
@@ -97,7 +97,6 @@ class Application extends Slim
      */
     public function invoke()
     {
-        $this->__construct($this->settings);
         foreach ($this->middleware as $middleware) {
             $middleware->call();
         }
