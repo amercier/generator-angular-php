@@ -9,7 +9,18 @@ try {
     require_once $autoload;
 
 
+    // Config
+    $config = array();
+    if (!file_exists($configDirectory = __DIR__ . '/config') || !is_dir($configDirectory)) {
+        throw new \Exception('Config directory is missing: ' . $configDirectory, 500);
+    }
+    foreach (preg_grep('/\\.php$/', scandir($configDirectory)) as $filename) {
+        $config = array_replace_recursive($config, include $configDirectory . '/' . $filename);
+    }
+
+
     // Slim Framework initialization
+
     if (!class_exists('\\Slim\\Slim')) {
         throw new \Exception(
             'Missing Slim from Composer dependencies.'
@@ -18,43 +29,23 @@ try {
         );
     }
     $app = new \Slim\Slim();
-
+    $app->config('debug', false);
     $app->error(function (\Exception $e) {
-        $app->response->setBody(json_encode(array(
-            'message' => $e->getMessage(),
-            'type' => get_class($e),
-            'file' => $e->getFile(),
-            'line' => $e->getLine(),
-            'type' => get_class($e),
-            'trace' => $e->getTrace(),
-        )));
+        throw $e;
     });
-
     $app->notFound(function () use ($app) {
-        $app->response->setBody(json_encode(array(
-            'message' => 'Resource not found'
-        )));
+        $request = $app->request;
+        throw new Exception(
+            'Resource ' . $request->getResourceUri() . ' using '
+            . $request->getMethod() . ' method does not exist.',
+            404
+        );
     });
 
 
     // Application-specific code starts here
 
-    $app->features = array(
-        'html5-boilerplate' => array(
-            'name' => 'HTML5 Boilerplate',
-            'description' => 'HTML5 Boilerplate is a professional front-end template'
-                . ' for building fast, robust, and adaptable web apps or sites.',
-        ),
-        'angular' => array(
-            'name' => 'Angular',
-            'description' => 'AngularJS is a toolset for building the framework most'
-                . ' suited to your application development.',
-        ),
-        'karma' => array(
-            'name' => 'Karma',
-            'description' => 'Spectacular Test Runner for JavaScript.',
-        ),
-    );
+    $app->features = $config['features'];
 
     $app->get('/api/features', function () use ($app) {
         $features = array();
@@ -87,14 +78,17 @@ try {
     $app->run();
 
 } catch (\Exception $e) {
-    http_response_code($e->getCode() === 0 ? 500 : $e->getCode());
+    if (!class_exists('\\Slim\\Http\\Response')
+        || ($statusText = \Slim\Http\Response::getMessageForCode($status = $e->getCode())) === null
+    ) {
+        $status = 500;
+        $statusText = 'Internal Server Error';
+    }
+    http_response_code($status);
     header('Content-Type: application/json');
     echo json_encode(array(
-        'message' => $e->getMessage(),
-        'type' => get_class($e),
-        'file' => $e->getFile(),
-        'line' => $e->getLine(),
-        'type' => get_class($e),
-        'trace' => $e->getTrace(),
+        'status' => $status,
+        'statusText' => $statusText,
+        'description' => $e->getMessage(),
     ));
 }

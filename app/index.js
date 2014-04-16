@@ -295,10 +295,11 @@ Generator.prototype._injectDependencies = function _injectDependencies() {
 
 Generator.prototype.phpFiles = function () {
   this.sourceRoot(path.join(__dirname, 'templates'));
-  this.template('api/index.php', 'app/api/index.php');
   this.template('api/composer.json', 'app/api/composer.json');
-  this.template('api/Makefile', 'app/api/Makefile');
-  this.template('api/_gitignore', 'app/api/.gitignore');
+  this.copy('api/index.php', 'app/api/index.php');
+  this.copy('api/Makefile', 'app/api/Makefile');
+  this.copy('api/_gitignore', 'app/api/.gitignore');
+  this.directory('api/config', 'app/api/config');
 };
 
 Generator.prototype._installPhpDependencies = function _installPhpDependencies() {
