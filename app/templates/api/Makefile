@@ -1,3 +1,4 @@
+.PHONY: update clean
 
 all:
 
@@ -5,6 +6,10 @@ all:
 # ==============================================================================
 # Dependencies
 # ==============================================================================
+
+update: composer.phar composer.json Makefile
+	[ -e composer.lock ] && php -d memory_limit=-1 composer.phar update || php -d memory_limit=-1 composer.phar install
+	touch vendor
 
 install: vendor
 	# .-----------------------------.
