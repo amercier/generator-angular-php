@@ -40,9 +40,12 @@ test: install
 	echo ===============================
 
 lint: install
-	vendor/bin/phpcs -p --standard=PSR1 config src tests index.php
-	vendor/bin/phpcs -p --standard=PSR2 config src tests index.php
-
+	vendor/bin/phpcs -p --standard=PSR1 config src tests index.php | tee /tmp/phpcs.log \
+	&& vendor/bin/phpcs -p --standard=PSR2 config src tests index.php | tee -a /tmp/phpcs.log \
+	&& echo " TOTAL   $$(grep ERROR /tmp/phpcs.log | wc -l) ERRORS" \
+	&& echo "         $$(grep WARNING /tmp/phpcs.log | wc -l) WARNINGS" \
+	&& echo \
+	&& rm /tmp/phpcs.log
 
 # ==============================================================================
 # Cleaning
