@@ -1,7 +1,7 @@
 # AngularJS generator with PHP
 
 [![NPM version](https://badge.fury.io/js/generator-angular-php.svg)](http://badge.fury.io/js/generator-angular-php)
-[![Build Status](https://secure.travis-ci.org/amercier/generator-angular-php.png)](http://travis-ci.org/amercier/generator-angular-php)
+[![Build Status](https://travis-ci.org/amercier/generator-angular-php.svg)](https://travis-ci.org/amercier/generator-angular-php)
 [![Dependency Status](https://david-dm.org/amercier/generator-angular-php.svg)](https://david-dm.org/amercier/generator-angular-php)
 [![devDependency Status](https://david-dm.org/amercier/generator-angular-php/dev-status.svg)](https://david-dm.org/amercier/generator-angular-php#info=devDependencies)
 
