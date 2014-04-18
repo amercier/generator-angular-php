@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "chalk": "~0.4.0",
-    "wiredep": "~1.0.0",
+    "wiredep": "~1.4.4",
     "yeoman-generator": "~0.16.0"
   },
   "peerDependencies": {
@@ -31,11 +31,11 @@
   },
   "devDependencies": {
     "grunt": "~0.4.1",
-    "grunt-contrib-jshint": "~0.8.0",
+    "grunt-contrib-jshint": "~0.10.0",
     "grunt-conventional-changelog": "~1.1.0",
-    "grunt-release": "~0.6.0",
-    "load-grunt-tasks": "~0.3.0",
-    "marked": "~0.2.8",
+    "grunt-release": "~0.7.0",
+    "load-grunt-tasks": "~0.4.0",
+    "marked": "~0.3.2",
     "mocha": "*",
     "semver": "~2.2.1",
     "underscore.string": "~2.3.1"
