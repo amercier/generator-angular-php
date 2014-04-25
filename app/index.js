@@ -305,8 +305,7 @@ Generator.prototype.phpFiles = function () {
 
 Generator.prototype._installPhpDependencies = function _installPhpDependencies() {
   console.log(
-    'Now running ' +
-    chalk.yellow.bold('make install --directory app/api') +
+    'Now running `make install --directory app/api`' +
     ' to install the required Composer dependencies.' +
     ' If this fails, try running the command yourself.'
   );
