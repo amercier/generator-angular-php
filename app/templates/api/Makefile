@@ -7,10 +7,6 @@ all:
 # Dependencies
 # ==============================================================================
 
-update: composer.phar composer.json Makefile
-	[ -e composer.lock ] && php -d memory_limit=-1 composer.phar update || php -d memory_limit=-1 composer.phar install
-	touch vendor
-
 install: vendor
 	# ┌─────────────────────────────┐
 	# │ Dependencies are up-to-date │
@@ -26,8 +22,8 @@ composer.phar:
 	# │ Downloaded Composer in composer.phar │
 	# └──────────────────────────────────────┘
 
-update: composer.phar composer.json
-	php composer.phar update
+update: composer.phar composer.json Makefile
+	[ -e composer.lock ] && php -d memory_limit=-1 composer.phar update || php -d memory_limit=-1 composer.phar install
 	# ┌────────────────────────────────────────────┐
 	# │ Updated Composer dependencies successfully │
 	# └────────────────────────────────────────────┘
