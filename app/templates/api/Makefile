@@ -12,9 +12,9 @@ update: composer.phar composer.json Makefile
 	touch vendor
 
 install: vendor
-	# .-----------------------------.
-	# | Dependencies are up-to-date |
-	# '-----------------------------'
+	# ┌─────────────────────────────┐
+	# │ Dependencies are up-to-date │
+	# └─────────────────────────────┘
 
 vendor: composer.phar composer.json Makefile
 	[ -e composer.lock ] && php -d memory_limit=-1 composer.phar update || php -d memory_limit=-1 composer.phar install
@@ -22,9 +22,15 @@ vendor: composer.phar composer.json Makefile
 
 composer.phar:
 	curl -s http://getcomposer.org/installer | php
-	# .--------------------------------------.
-	# | Downloaded Composer in composer.phar |
-	# '--------------------------------------'
+	# ┌──────────────────────────────────────┐
+	# │ Downloaded Composer in composer.phar │
+	# └──────────────────────────────────────┘
+
+update: composer.phar composer.json
+	php composer.phar update
+	# ┌────────────────────────────────────────────┐
+	# │ Updated Composer dependencies successfully │
+	# └────────────────────────────────────────────┘
 
 
 # ==============================================================================
@@ -57,6 +63,6 @@ clean:
 	[ ! -e composer.phar ] || rm -f composer.phar
 	[ ! -d tests/_files ] || rm -Rf tests/_files
 	[ ! -e tests/_files.tar.gz ] || rm -Rf tests/_files.tar.gz
-	# .---------.
-	# | Cleaned |
-	# '---------'
+	# ┌─────────┐
+	# │ Cleaned │
+	# └─────────┘
