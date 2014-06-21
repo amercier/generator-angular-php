@@ -134,7 +134,7 @@ var Generator = module.exports = function Generator(args, options) {
     });
 
     if (this.env.options.ngRoute) {
-      this.invoke('angular:route', {
+      this.invoke('angular-php:route', {
         args: ['about']
       });
     }
