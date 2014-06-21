@@ -31,7 +31,7 @@ describe('Angular generator route mechanism', function () {
         done(err);
       }
       angular = helpers.createGenerator(
-        'angular-php:app-php',
+        'angular-php:app',
         [
           '../../app',
           '../../common',
