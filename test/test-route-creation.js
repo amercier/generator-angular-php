@@ -1,114 +1,96 @@
 /*global describe, before, it, beforeEach */
 'use strict';
-var fs = require('fs');
-var assert = require('assert');
-var path = require('path');
-var util = require('util');
-var generators = require('yeoman-generator');
-var helpers = require('yeoman-generator').test;
-var _ = require('underscore.string');
 
+var path = require('path');
+var helpers = require('yeoman-generator').test;
 
 describe('Angular generator route mechanism', function () {
-
-  var folderName = 'routeTests';
   var angular;
+  var route = 'simpleroute';
+  var expected = [
+    'app/scripts/controllers/' + route + '.js',
+    'test/spec/controllers/' + route + '.js',
+    'app/views/' + route + '.html'
+  ];
+  var genOptions = {
+    'appPath': 'app',
+    'skip-install': true,
+    'skip-welcome-message': true,
+    'skip-message': true
+  };
+  var mockPrompts = {
+    compass: true,
+    bootstrap: true,
+    compassBootstrap: true,
+    modules: ['routeModule']
+  };
 
   beforeEach(function (done) {
-    var deps = [
-      '../../app',
-      '../../common',
-      '../../controller',
-      '../../route',
-      '../../view',
-      '../../main', [
-        helpers.createDummyGenerator(),
-        'karma:app'
-      ]
-    ];
-    helpers.testDirectory(path.join(__dirname, folderName), function (err) {
+    helpers.testDirectory(path.join(__dirname, 'tmp'), function (err) {
       if (err) {
         done(err);
       }
-      angular = helpers.createGenerator('angular-php:app', deps);
-      angular.options['skip-install'] = true;
-
-      helpers.mockPrompt(angular, {
-        compass: true,
-        bootstrap: true,
-        compassBootstrap: true,
-        modules: ['routeModule']
-      });
-
-      angular.run({}, function(){
+      angular = helpers.createGenerator(
+        'angular:app-php',
+        [
+          '../../app',
+          '../../common',
+          '../../controller',
+          '../../main',
+          '../../route',
+          '../../view', [
+            helpers.createDummyGenerator(),
+            'karma:app'
+          ]
+        ],
+        false,
+        genOptions
+      );
+      helpers.mockPrompt(angular, mockPrompts);
+      angular.run({}, function () {
+        angular = helpers.createGenerator(
+          'angular-php:route',
+          [
+            '../../controller',
+            '../../route',
+            '../../view'
+          ],
+          [route],
+          genOptions
+        );
+        helpers.mockPrompt(angular, mockPrompts);
         done();
       });
     });
   });
 
+  describe('create routes', function () {
+    it('should generate default route items', function(done){
+      angular.run({}, function(e) {
+        helpers.assertFile(expected);
+        helpers.assertFileContent(
+          'app/scripts/app.js',
+          new RegExp('when\\(\'/' + route + '\'')
+        );
 
-  it('should generate routes, controllers and views', function(done){
-    var route = 'simpleroute';
-    var expected = [
-      'app/scripts/controllers/' + route + '.js',
-      'test/spec/controllers/' + route + '.js',
-      'app/views/' + route + '.html'
-    ];
-    var deps = [
-      '../../app',
-      '../../common',
-      '../../controller',
-      '../../route',
-      '../../view'
-    ];
-
-    var angularRouteGenerator = helpers.createGenerator('angular-php:route', deps, [route]);
-
-    angularRouteGenerator.run({}, function(){
-
-      // Check if new files are created for the route
-      helpers.assertFiles(expected);
-
-      var app_js = fs.readFileSync('app/scripts/app.js', 'utf8');
-      var route_regex = new RegExp('when\\(\'/' + route + '\'');
-
-      assert.ok(route_regex.test(app_js), 'app.js does not have the route ' + route + ' added');
-
-      done();
+        done();
+      });
     });
-  });
 
+    // Test with URI specified explicitly
+    it('should generate route items with the route uri given', function(done){
+      var uri = 'segment1/segment2/:parameter';
 
-  // Test with URI specified explicitly
-  it('should generate routes, controllers and views with the route uri given', function(done){
-    var route = 'complexroute';
-    var uri = 'segment1/segment2/:parameter'
-    var expected = [
-      'app/scripts/controllers/' + route + '.js',
-      'test/spec/controllers/' + route + '.js',
-      'app/views/' + route + '.html'
-    ];
-    var deps = [
-      '../../app',
-      '../../common',
-      '../../controller',
-      '../../route',
-      '../../view'
-    ];
+      angular.options.uri = uri;
+      angular.run({}, function() {
+        helpers.assertFile(expected);
+        helpers.assertFileContent(
+          'app/scripts/app.js',
+          new RegExp('when\\(\'/' + uri + '\'')
+        );
 
-    var angularRouteGenerator = helpers.createGenerator('angular-php:route', deps, [route], { uri: uri });
-
-    angularRouteGenerator.run({}, function(){
-
-      // Check if new files are created for the route
-      helpers.assertFiles(expected);
-
-      var app_js = fs.readFileSync('app/scripts/app.js', 'utf8');
-      var route_regex = new RegExp('when\\(\'/' + uri + '\'');
-
-      assert.ok(route_regex.test(app_js), 'app.js does not have the route ' + uri + ' added');
-
-      done();
+        done();
+      });
     });
   });
 });

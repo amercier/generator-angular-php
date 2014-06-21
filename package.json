@@ -16,26 +16,47 @@
   "bugs": "https://github.com/amercier/generator-angular-php/issues",
   "author": "Alexandre Mercier",
   "main": "app/index.js",
+  "files": [
+    "app",
+    "common",
+    "constant",
+    "controller",
+    "decorator",
+    "directive",
+    "factory",
+    "filter",
+    "main",
+    "provider",
+    "route",
+    "service",
+    "templates",
+    "value",
+    "view",
+    "script-base.js",
+    "util.js"
+  ],
   "repository": "amercier/generator-angular-php",
   "scripts": {
     "test": "mocha"
   },
   "dependencies": {
-    "wiredep": "~1.4.4",
-    "yeoman-generator": "~0.16.0"
+    "wiredep": "^1.0.0",
+    "yeoman-generator": "^0.16.0",
+    "yosay": "^0.2.0",
+    "chalk": "^0.4.0"
   },
   "peerDependencies": {
-    "generator-karma": ">=0.6.0",
+    "generator-karma": ">=0.8.2",
     "yo": ">=1.0.0"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-jshint": "~0.10.0",
     "grunt-conventional-changelog": "~1.1.0",
-    "grunt-release": "~0.7.0",
-    "load-grunt-tasks": "~0.4.0",
+    "grunt-release": "~0.6.0",
+    "load-grunt-tasks": "~0.3.0",
     "mocha": "*",
-    "semver": "~2.2.1",
+    "semver": "~2.3.0",
     "underscore.string": "~2.3.1"
   },
   "engines": {

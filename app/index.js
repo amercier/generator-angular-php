@@ -4,8 +4,9 @@ var path = require('path');
 var util = require('util');
 var angularUtils = require('../util.js');
 var yeoman = require('yeoman-generator');
+var yosay = require('yosay');
 var wiredep = require('wiredep');
-
+var chalk = require('chalk');
 
 var Generator = module.exports = function Generator(args, options) {
   yeoman.generators.Base.apply(this, arguments);
@@ -18,15 +19,25 @@ var Generator = module.exports = function Generator(args, options) {
     type: String,
     required: 'false'
   });
+  this.env.options['app-suffix'] = this.options['app-suffix'];
   this.scriptAppName = this.appname + angularUtils.appName(this);
 
   args = ['main'];
 
   if (typeof this.env.options.appPath === 'undefined') {
-    try {
-      this.env.options.appPath = require(path.join(process.cwd(), 'bower.json')).appPath;
-    } catch (e) {}
+    this.option('appPath', {
+      desc: 'Generate CoffeeScript instead of JavaScript'
+    });
+
+    this.env.options.appPath = this.options.appPath;
+
+    if (!this.env.options.appPath) {
+      try {
+        this.env.options.appPath = require(path.join(process.cwd(), 'bower.json')).appPath;
+      } catch (e) {}
+    }
     this.env.options.appPath = this.env.options.appPath || 'app';
+    this.options.appPath = this.env.options.appPath;
   }
 
   this.appPath = this.env.options.appPath;
@@ -69,56 +80,89 @@ var Generator = module.exports = function Generator(args, options) {
 
     var enabledComponents = [];
 
-    if (this.resourceModule) {
-      enabledComponents.push('angular-resource/angular-resource.js');
+    if (this.animateModule) {
+      enabledComponents.push('angular-animate/angular-animate.js');
     }
 
     if (this.cookiesModule) {
       enabledComponents.push('angular-cookies/angular-cookies.js');
     }
 
-    if (this.sanitizeModule) {
-      enabledComponents.push('angular-sanitize/angular-sanitize.js');
+    if (this.resourceModule) {
+      enabledComponents.push('angular-resource/angular-resource.js');
     }
 
     if (this.routeModule) {
       enabledComponents.push('angular-route/angular-route.js');
     }
 
+    if (this.sanitizeModule) {
+      enabledComponents.push('angular-sanitize/angular-sanitize.js');
+    }
+
+    if (this.touchModule) {
+      enabledComponents.push('angular-touch/angular-touch.js');
+    }
+
+    enabledComponents = [
+      'angular/angular.js',
+      'angular-mocks/angular-mocks.js'
+    ].concat(enabledComponents).join(',');
+
+    var jsExt = this.options.coffee ? 'coffee' : 'js';
+
     this.invoke('karma:app', {
       options: {
-        coffee: this.options.coffee,
-        travis: true,
         'skip-install': this.options['skip-install'],
-        components: [
-          'angular/angular.js',
-          'angular-mocks/angular-mocks.js'
-        ].concat(enabledComponents)
+        'base-path': '../',
+        'coffee': this.options.coffee,
+        'travis': true,
+        'bower-components': enabledComponents,
+        'app-files': 'app/scripts/**/*.' + jsExt,
+        'test-files': [
+          'test/mock/**/*.' + jsExt,
+          'test/spec/**/*.' + jsExt
+        ].join(','),
+        'bower-components-path': 'bower_components'
       }
     });
 
+    this.installDependencies({
+      skipInstall: this.options['skip-install'],
+      skipMessage: this.options['skip-message'],
+      callback: this._injectDependencies.bind(this)
+    });
+
+    if (this.env.options.ngRoute) {
+      this.invoke('angular:route', {
+        args: ['about']
+      });
+    }
   });
 
   this.pkg = require('../package.json');
+  this.sourceRoot(path.join(__dirname, '../templates/common'));
 };
 
 util.inherits(Generator, yeoman.generators.Base);
 
 Generator.prototype.welcome = function welcome() {
-  // welcome message
   if (!this.options['skip-welcome-message']) {
-    console.log(this.yeoman);
-    console.log(
-      'Out of the box I include Bootstrap and some AngularJS recommended modules.\n'
+    this.log(yosay());
+    this.log(
+      chalk.magenta(
+        'Out of the box I include Bootstrap and some AngularJS recommended modules.' +
+        '\n'
+      )
     );
+  }
 
-    // Removed notice for minsafe
-    if (this.options.minsafe) {
-      console.warn(
-        '\n** The --minsafe flag has been removed. For more information, see ' +
-        'https://github.com/yeoman/generator-angular#minification-safe. **\n'
-      );
-    }
+  if (this.options.minsafe) {
+    this.log.error(
+      'The --minsafe flag has been removed. For more information, see' +
+      '\nhttps://github.com/yeoman/generator-angular#minification-safe.' +
+      '\n'
+    );
   }
 };
 
@@ -169,33 +213,49 @@ Generator.prototype.askForModules = function askForModules() {
     type: 'checkbox',
     name: 'modules',
     message: 'Which modules would you like to include?',
-    choices: [{
-      value: 'resourceModule',
-      name: 'angular-resource.js',
+    choices: [
+    {
+      value: 'animateModule',
+      name: 'angular-animate.js',
       checked: true
     }, {
       value: 'cookiesModule',
       name: 'angular-cookies.js',
       checked: true
     }, {
-      value: 'sanitizeModule',
-      name: 'angular-sanitize.js',
+      value: 'resourceModule',
+      name: 'angular-resource.js',
       checked: true
     }, {
       value: 'routeModule',
       name: 'angular-route.js',
       checked: true
-    }]
+    }, {
+      value: 'sanitizeModule',
+      name: 'angular-sanitize.js',
+      checked: true
+    }, {
+      value: 'touchModule',
+      name: 'angular-touch.js',
+      checked: true
+    }
+    ]
   }];
 
   this.prompt(prompts, function (props) {
     var hasMod = function (mod) { return props.modules.indexOf(mod) !== -1; };
-    this.resourceModule = hasMod('resourceModule');
+    this.animateModule = hasMod('animateModule');
     this.cookiesModule = hasMod('cookiesModule');
-    this.sanitizeModule = hasMod('sanitizeModule');
+    this.resourceModule = hasMod('resourceModule');
     this.routeModule = hasMod('routeModule');
+    this.sanitizeModule = hasMod('sanitizeModule');
+    this.touchModule = hasMod('touchModule');
 
     var angMods = [];
+
+    if (this.animateModule) {
+      angMods.push("'ngAnimate'");
+    }
 
     if (this.cookiesModule) {
       angMods.push("'ngCookies'");
@@ -204,12 +264,18 @@ Generator.prototype.askForModules = function askForModules() {
     if (this.resourceModule) {
       angMods.push("'ngResource'");
     }
-    if (this.sanitizeModule) {
-      angMods.push("'ngSanitize'");
-    }
+
     if (this.routeModule) {
       angMods.push("'ngRoute'");
       this.env.options.ngRoute = true;
+    }
+
+    if (this.sanitizeModule) {
+      angMods.push("'ngSanitize'");
+    }
+
+    if (this.touchModule) {
+      angMods.push("'ngTouch'");
     }
 
     if (angMods.length) {
@@ -222,21 +288,15 @@ Generator.prototype.askForModules = function askForModules() {
 
 Generator.prototype.readIndex = function readIndex() {
   this.ngRoute = this.env.options.ngRoute;
-  this.indexFile = this.engine(this.read('../../templates/common/index.html'), this);
+  this.indexFile = this.engine(this.read('app/index.html'), this);
 };
 
 Generator.prototype.bootstrapFiles = function bootstrapFiles() {
-  var sass = this.compass;
-  var mainFile = 'main.' + (sass ? 's' : '') + 'css';
-
-  if (this.bootstrap && !sass) {
-    this.copy('fonts/glyphicons-halflings-regular.eot', 'app/fonts/glyphicons-halflings-regular.eot');
-    this.copy('fonts/glyphicons-halflings-regular.ttf', 'app/fonts/glyphicons-halflings-regular.ttf');
-    this.copy('fonts/glyphicons-halflings-regular.svg', 'app/fonts/glyphicons-halflings-regular.svg');
-    this.copy('fonts/glyphicons-halflings-regular.woff', 'app/fonts/glyphicons-halflings-regular.woff');
-  }
-
-  this.copy('styles/' + mainFile, 'app/styles/' + mainFile);
+  var cssFile = 'styles/main.' + (this.compass ? 's' : '') + 'css';
+  this.copy(
+    path.join('app', cssFile),
+    path.join(this.appPath, cssFile)
+  );
 };
 
 Generator.prototype.appJs = function appJs() {
@@ -245,7 +305,7 @@ Generator.prototype.appJs = function appJs() {
     fileType: 'js',
     optimizedPath: 'scripts/scripts.js',
     sourceFileList: ['scripts/app.js', 'scripts/controllers/main.js'],
-    searchPath: ['.tmp', 'app']
+    searchPath: ['.tmp', this.appPath]
   });
 };
 
@@ -254,31 +314,27 @@ Generator.prototype.createIndexHtml = function createIndexHtml() {
   this.write(path.join(this.appPath, 'index.html'), this.indexFile);
 };
 
-Generator.prototype.packageFiles = function () {
+Generator.prototype.packageFiles = function packageFiles() {
   this.coffee = this.env.options.coffee;
-  this.template('../../templates/common/_bower.json', 'bower.json');
-  this.template('../../templates/common/_package.json', 'package.json');
-  this.template('../../templates/common/Gruntfile.js', 'Gruntfile.js');
-};
-
-Generator.prototype.imageFiles = function () {
-  this.sourceRoot(path.join(__dirname, 'templates'));
-  this.directory('images', 'app/images', true);
+  this.template('root/_bower.json', 'bower.json');
+  this.template('root/_bowerrc', '.bowerrc');
+  this.template('root/_package.json', 'package.json');
+  this.template('root/_Gruntfile.js', 'Gruntfile.js');
 };
 
 Generator.prototype._injectDependencies = function _injectDependencies() {
   if (this.options['skip-install']) {
-    console.log(
-      '\nAfter running `npm install & bower install`, inject your front end dependencies into' +
-      '\nyour HTML by running:' +
+    this.log(
+      'After running `npm install & bower install`, inject your front end dependencies' +
+      '\ninto your source code by running:' +
       '\n' +
-      '\n  grunt bowerInstall'
+      '\n' + chalk.yellow.bold('grunt wiredep')
     );
   } else {
     wiredep({
-      directory: 'app/bower_components',
+      directory: 'bower_components',
       bowerJson: JSON.parse(fs.readFileSync('./bower.json')),
-      ignorePath: 'app/',
+      ignorePath: new RegExp('^(' + this.appPath + '|..)/'),
       src: 'app/index.html',
       fileTypes: {
         html: {
