@@ -70,13 +70,6 @@ var Generator = module.exports = function Generator(args, options) {
   });
 
   this.on('end', function () {
-    this.installDependencies({
-      skipInstall: this.options['skip-install'],
-      callback: function() {
-        this._injectDependencies();
-        this._installPhpDependencies();
-      }.bind(this)
-    });
 
     var enabledComponents = [];
 
@@ -130,7 +123,10 @@ var Generator = module.exports = function Generator(args, options) {
     this.installDependencies({
       skipInstall: this.options['skip-install'],
       skipMessage: this.options['skip-message'],
-      callback: this._injectDependencies.bind(this)
+      callback: function() {
+        this._injectDependencies();
+        this._installPhpDependencies();
+      }.bind(this)
     });
 
     if (this.env.options.ngRoute) {
