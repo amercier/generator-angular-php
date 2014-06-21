@@ -529,7 +529,6 @@ module.exports = function (grunt) {
 
     grunt.task.run([
       'clean:server',
-      'shell:phpTest',
       'wiredep',
       'concurrent:server',
       'autoprefixer',
