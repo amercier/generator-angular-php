@@ -2,6 +2,7 @@
 
 [![NPM version](https://badge.fury.io/js/generator-angular-php.svg)](http://badge.fury.io/js/generator-angular-php)
 [![Build Status](https://travis-ci.org/amercier/generator-angular-php.svg)](https://travis-ci.org/amercier/generator-angular-php)
+[![Code Climate](https://codeclimate.com/github/amercier/generator-angular-php/badges/gpa.svg)](https://codeclimate.com/github/amercier/generator-angular-php)
 [![Dependency Status](https://david-dm.org/amercier/generator-angular-php.svg)](https://david-dm.org/amercier/generator-angular-php)
 [![devDependency Status](https://david-dm.org/amercier/generator-angular-php/dev-status.svg)](https://david-dm.org/amercier/generator-angular-php#info=devDependencies)
 
