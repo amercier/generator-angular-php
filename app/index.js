@@ -350,6 +350,7 @@ Generator.prototype.phpFiles = function () {
   this.copy('api/index.php', 'app/api/index.php');
   this.copy('api/Makefile', 'app/api/Makefile');
   this.copy('api/_gitignore', 'app/api/.gitignore');
+  this.copy('api/.htaccess', 'app/api/.htaccess');
   this.directory('api/config', 'app/api/config');
   this.directory('api/src', 'app/api/src');
   this.directory('api/tests', 'app/api/tests');
