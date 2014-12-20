@@ -434,7 +434,7 @@ module.exports = function (grunt) {
           cwd: '<%%= yeoman.app %>',
           dest: '<%%= yeoman.dist %>',
           src: [
-            'api/**',
+            'api/{{config,src,vendor}/**,index.php,.htaccess}',
             '*.{ico,png,txt}',
             '.htaccess',
             '*.html',
