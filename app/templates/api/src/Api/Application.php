@@ -41,13 +41,13 @@ class Application extends Slim
         $this->config = $this->initConfig();
 
         // /features
-        $this->get('/api/features', function () {
+        $this->get('/features', function () {
             $features = new Features($this->config['features']);
             $this->response->headers->set('Content-Type', 'application/json');
             $this->response->setBody(json_encode($features->getFeatures()));
         });
 
-        $this->get('/api/features/:id', function ($id) {
+        $this->get('/features/:id', function ($id) {
             $features = new Features($this->config['features']);
             $feature = $features->getFeature($id);
             if ($feature === null) {

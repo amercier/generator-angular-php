@@ -18,7 +18,7 @@ class FeaturesTest extends \PHPUnit_Framework_TestCase
     public function testIndex()
     {
         Environment::mock(array(
-            'PATH_INFO' => '/api/features',
+            'PATH_INFO' => '/features',
         ));
 
         $expected = array();
@@ -41,7 +41,7 @@ class FeaturesTest extends \PHPUnit_Framework_TestCase
         foreach ($this->app->config['features'] as $id => $feature) {
             $app = new Application();
             Environment::mock(array(
-                'PATH_INFO' => '/api/features/' . $id,
+                'PATH_INFO' => '/features/' . $id,
             ));
             $response = $app->invoke();
             $this->assertEquals(
@@ -55,13 +55,13 @@ class FeaturesTest extends \PHPUnit_Framework_TestCase
     public function testUnknownFeatureGets404()
     {
         Environment::mock(array(
-            'PATH_INFO' => '/api/features/unknown',
+            'PATH_INFO' => '/features/unknown',
         ));
         $response = $this->app->invoke();
         $this->assertEquals(json_encode(array(
             "status" => 404,
             "statusText" => "Not Found",
-            "description" => "Resource /api/features/unknown using GET method does not exist.",
+            "description" => "Resource /features/unknown using GET method does not exist.",
         )), $response->getBody());
         $this->assertEquals(404, $response->getStatus());
     }
