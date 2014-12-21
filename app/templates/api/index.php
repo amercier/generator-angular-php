@@ -5,7 +5,6 @@ ini_set('display_startup_errors', 1);
 date_default_timezone_set('UTC');
 
 try {
-
     // Initialize Composer autoloader
     if (!file_exists($autoload = __DIR__ . '/vendor/autoload.php')) {
         throw new \Exception('Composer dependencies not installed. Run `make install --directory app/api`');
