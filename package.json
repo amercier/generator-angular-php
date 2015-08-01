@@ -1,6 +1,6 @@
 {
   "name": "generator-angular-php",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "description": "Yeoman generator for AngularJS with a PHP backend. Based on generator-angular. /api is redirected by grunt-connect-proxy to the PHP built-in server using grunt-php",
   "keywords": [
     "yeoman-generator",
